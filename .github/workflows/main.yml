@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: [7.4.11]
+        php-version: [7.2.34]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -28,4 +28,4 @@ jobs:
           php_version: ${{ matrix.php-version }}
       # Runs a single command using the runners shell
       - name: Benchmark
-        run: php bench.php
+        run: php benchmark.php
