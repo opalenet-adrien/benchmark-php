@@ -1,18 +1,16 @@
-language: php
+language: go
 
-cache:
-  directories:
-    - /usr/local/go
-    - $HOME/go
+go:
+  - master
 
-before_deploy:
-  - wget https://golang.org/dl/go1.15.3.linux-amd64.tar.gz
-  - sudo tar -C /usr/local -xzf go1.15.3.linux-amd64.tar.gz
-  - rm go1.15.3.linux-amd64.tar.gz
-  - export PATH=$PATH:/usr/local/go/bin
+before_script:
   - go get -u github.com/git-chglog/git-chglog/cmd/git-chglog
   - export PATH=$PATH:~/go/bin
+
+script:
   - git-chglog --next-tag mytag --output CHANGELOG.md --no-case
+
+before_deploy:
   # Set up git user name and tag this commit
   - git config --local user.name "Travis CI"
   - git config --local user.email "travis@opale.net"
