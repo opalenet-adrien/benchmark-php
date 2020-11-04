@@ -18,6 +18,7 @@ before_deploy:
   - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
   - git tag $TRAVIS_TAG
   - git-chglog $PREVIOUS_TAG..$TRAVIS_TAG --no-case > changelog.tmp.md
+  - cat ./changelog.tmp.md
   - export BODY=$(sed -e 's/^"//' -e 's/"$//' <<<$(git-chglog $PREVIOUS_TAG..$TRAVIS_TAG --no-case))
 
 deploy:
@@ -28,4 +29,4 @@ deploy:
   skip_cleanup: true
   draft: true
   overwrite: true
-  release_notes_file: "changelog.tmp.md"
+  release_notes_file: ./changelog.tmp.md
