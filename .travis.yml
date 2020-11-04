@@ -16,7 +16,7 @@ install:
 
 script:
   - git-chglog --next-tag mytag --output CHANGELOG.md
-  - git checkout -b changelog
+  - git checkout -b changelog-tci
   - git push --set-upstream origin changelog-tci
   - git add CHANGELOG.md
   - git commit -m "updated changelog"
