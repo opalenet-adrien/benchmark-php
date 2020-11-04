@@ -9,12 +9,12 @@ go:
   - master
 
 install:
-  - git config user.name "Travis CI"
-  - git config user.email "travis-ci@opale.net"
   - go get -u github.com/git-chglog/git-chglog/cmd/git-chglog
   - export PATH=$PATH:~/go/bin
 
 script:
+  - git config --global user.name "Travis CI"
+  - git config --global user.email "travis-ci@opale.net"
   - git remote add upstream "https://$GH_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
   - git fetch upstream
   - git checkout -b changelog-tci
