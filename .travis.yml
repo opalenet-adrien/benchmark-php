@@ -15,9 +15,10 @@ install:
   - export PATH=$PATH:~/go/bin
 
 script:
-  - git-chglog --next-tag mytag --output CHANGELOG.md
-  - git checkout -b changelog-tci
-  - git push --set-upstream origin changelog-tci
+  - git remote add upstream "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
+  - git fetch upstream
+  - git checkout changelog-tci
+  - git-chglog --next-tag mytag --output CHANGELOG.md --no-case
   - git add CHANGELOG.md
   - git commit -m "updated changelog"
-  - git push
+  - git push upstream changelog-tci
