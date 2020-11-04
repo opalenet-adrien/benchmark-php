@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  benchmark:
+    image: php:latest
+    volumes:
+      - ./:/app/
+      - ~/.bashrc:/root/.bashrc
+      - ~/.bash-git-prompt/:/root/.bash-git-prompt/
+    tty: true
+    restart: always

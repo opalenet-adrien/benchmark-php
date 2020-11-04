@@ -1,6 +1,23 @@
-language: php
-php:
-  - '7.2.34'
+language: go
+
+cache:
+  directories:
+    - /usr/local/go
+    - $HOME/go
+
+go:
+  - master
+
+install:
+  - git config user.name "Travis CI"
+  - git config user.email "travis-ci@opale.net"
+  - go get -u github.com/git-chglog/git-chglog/cmd/git-chglog
+  - export PATH=$PATH:~/go/bin
 
 script:
-  - php benchmark.php
+  - git-chglog --next-tag mytag --output CHANGELOG.md
+  - git checkout -b changelog
+  - git push --set-upstream origin changelog-tci
+  - git add CHANGELOG.md
+  - git commit -m "updated changelog"
+  - git push
