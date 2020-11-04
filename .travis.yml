@@ -15,11 +15,17 @@ before_deploy:
   # Set up git user name and tag this commit
   - git config --local user.name "Travis CI"
   - git config --local user.email "travis@opale.net"
+  - git remote add upstream "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
+  - git fetch upstream
+  - git checkout -b changelog-tci
+  - git-chglog --next-tag $TRAVIS_TAG --output CHANGELOG.md --no-case
+  - git add -A CHANGELOG.md
+  - git commit -m "updated changelog at ${rev}"
+  - git push upstream changelog-tci
   - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
   - git tag $TRAVIS_TAG
   - git-chglog $PREVIOUS_TAG..$TRAVIS_TAG --no-case > changelog.tmp.md
   - cat ./changelog.tmp.md
-  - export BODY=$(sed -e 's/^"//' -e 's/"$//' <<<$(git-chglog $PREVIOUS_TAG..$TRAVIS_TAG --no-case))
 
 deploy:
   provider: releases
@@ -29,4 +35,5 @@ deploy:
   skip_cleanup: true
   draft: true
   overwrite: true
+  name: "Release"
   release_notes_file: ./changelog.tmp.md
