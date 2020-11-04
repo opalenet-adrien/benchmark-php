@@ -19,8 +19,8 @@ before_deploy:
 
 deploy:
   provider: releases
-  api_key:
-    secure: $GITHUB_TOKEN
+  api_key: $GITHUB_TOKEN
   file: "CHANGELOG.md"
   skip_cleanup: true
   draft: true
+  overwrite: true
