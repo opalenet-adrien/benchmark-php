@@ -24,5 +24,3 @@ deploy:
   file: "CHANGELOG.md"
   skip_cleanup: true
   draft: true
-  on:
-    tags: true
