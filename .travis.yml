@@ -20,7 +20,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: $GH_TOKEN
+    secure: $GITHUB_TOKEN
   file: "CHANGELOG.md"
   skip_cleanup: true
   draft: true
