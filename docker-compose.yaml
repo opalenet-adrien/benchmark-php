@@ -7,5 +7,7 @@ services:
       - ./:/app/
       - ~/.bashrc:/root/.bashrc
       - ~/.bash-git-prompt/:/root/.bash-git-prompt/
+      - ~/.ssh/:/root/.ssh/
+      - ~/.git/:/root/.git/
     tty: true
     restart: always
