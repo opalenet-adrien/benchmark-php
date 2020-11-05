@@ -24,16 +24,19 @@ before_deploy:
   - git push upstream changelog-tci
   - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
   - git tag $TRAVIS_TAG
-  - git-chglog $PREVIOUS_TAG..$TRAVIS_TAG --no-case > changelog.tmp.md
-  - cat ./changelog.tmp.md
+  - git-chglog $PREVIOUS_TAG..$TRAVIS_TAG --no-case > ~/changelog.tmp.md
+  - tar -czvf ~/$TRAVIS_TAG.tar.gz ./
+  - zip -r ~/$TRAVIS_TAG.zip ./
 
 deploy:
   provider: releases
-  api_key: $GITHUB_TOKEN
+  edge: true
+  token: $GITHUB_TOKEN
   file_glob: true
-  file: ./**
-  skip_cleanup: true
+  file:
+    - ~/$TRAVIS_TAG.tar.gz
+    - ~/$TRAVIS_TAG.zip
+  cleanup: false
   draft: true
-  overwrite: true
-  name: "Release"
-  release_notes_file: ./changelog.tmp.md
+  name: $TRAVIS_TAG
+  release_notes_file: ~/changelog.tmp.md
