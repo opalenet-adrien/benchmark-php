@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - master
+  - lts/*
 
 branches:
   only:
@@ -16,11 +16,12 @@ before_deploy:
   - git config --local user.email "travis@opale.net"
   - git remote add upstream "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
   - git fetch upstream
-  - standard-version
+  - standard-version -i /home/travis/changelog.tmp.md --skip.commit --skip.tag
+  - standard-version --skip.commit
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(git describe --abbrev=0 --tags)}
+  - git add -A CHANGELOG.md
+  - git commit -m "chore(release):Update CHANGELOG.md for $TRAVIS_TAG"
   - git push --follow-tags upstream master
-  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - git tag $TRAVIS_TAG
-  - git-chglog $PREVIOUS_TAG..$TRAVIS_TAG --no-case > /home/travis/changelog.tmp.md
 
 deploy:
   provider: releases
