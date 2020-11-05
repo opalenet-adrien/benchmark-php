@@ -3,6 +3,10 @@ language: go
 go:
   - master
 
+branches:
+  only:
+    - master
+
 before_script:
   - go get -u github.com/git-chglog/git-chglog/cmd/git-chglog
   - export PATH=$PATH:~/go/bin
@@ -13,8 +17,6 @@ script:
 
 before_deploy:
   # Set up git user name and tag this commit
-  - tar -czvf /home/travis/$TRAVIS_TAG.tar.gz ./
-  - zip -r /home/travis/$TRAVIS_TAG.zip ./
   - git config --local user.name "Travis CI"
   - git config --local user.email "travis@opale.net"
   - git remote add upstream "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
@@ -32,13 +34,7 @@ deploy:
   provider: releases
   edge: true
   token: $GITHUB_TOKEN
-  file_glob: true
-  file:
-    - /home/travis/$TRAVIS_TAG.tar.gz
-    - /home/travis/$TRAVIS_TAG.zip
   cleanup: false
   draft: true
   name: $TRAVIS_TAG
   release_notes_file: /home/travis/changelog.tmp.md
-  on:
-    branch: master
