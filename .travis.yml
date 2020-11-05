@@ -13,6 +13,8 @@ script:
 
 before_deploy:
   # Set up git user name and tag this commit
+  - tar -czvf /home/travis/$TRAVIS_TAG.tar.gz ./
+  - zip -r /home/travis/$TRAVIS_TAG.zip ./
   - git config --local user.name "Travis CI"
   - git config --local user.email "travis@opale.net"
   - git remote add upstream "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
@@ -24,9 +26,7 @@ before_deploy:
   - git push upstream changelog-tci
   - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
   - git tag $TRAVIS_TAG
-  - git-chglog $PREVIOUS_TAG..$TRAVIS_TAG --no-case > ~/changelog.tmp.md
-  - tar -czvf ~/$TRAVIS_TAG.tar.gz ./
-  - zip -r ~/$TRAVIS_TAG.zip ./
+  - git-chglog $PREVIOUS_TAG..$TRAVIS_TAG --no-case > /home/travis/changelog.tmp.md
 
 deploy:
   provider: releases
@@ -34,9 +34,11 @@ deploy:
   token: $GITHUB_TOKEN
   file_glob: true
   file:
-    - ~/$TRAVIS_TAG.tar.gz
-    - ~/$TRAVIS_TAG.zip
+    - /home/travis/$TRAVIS_TAG.tar.gz
+    - /home/travis/$TRAVIS_TAG.zip
   cleanup: false
   draft: true
   name: $TRAVIS_TAG
-  release_notes_file: ~/changelog.tmp.md
+  release_notes_file: /home/travis/changelog.tmp.md
+  on:
+    branch: master
