@@ -1,19 +1,14 @@
-language: go
+language: node_js
 
-go:
+node_js:
   - master
 
 branches:
   only:
     - master
 
-before_script:
-  - go get -u github.com/git-chglog/git-chglog/cmd/git-chglog
-  - export PATH=$PATH:~/go/bin
-
 script:
-  - export PREVIOUS_TAG=$(git describe --abbrev=0 --tags)
-  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+  - npm i -g standard-version
 
 before_deploy:
   # Set up git user name and tag this commit
@@ -21,11 +16,8 @@ before_deploy:
   - git config --local user.email "travis@opale.net"
   - git remote add upstream "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
   - git fetch upstream
-  - git checkout -b changelog-tci
-  - git-chglog --next-tag $TRAVIS_TAG --output CHANGELOG.md --no-case
-  - git add -A CHANGELOG.md
-  - git commit -m "updated changelog at ${rev}"
-  - git push upstream changelog-tci
+  - standard-version
+  - git push --follow-tags upstream master
   - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
   - git tag $TRAVIS_TAG
   - git-chglog $PREVIOUS_TAG..$TRAVIS_TAG --no-case > /home/travis/changelog.tmp.md
