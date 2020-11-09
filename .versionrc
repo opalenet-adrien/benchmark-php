@@ -1,0 +1,13 @@
+{
+    "types":  [
+        {"type": "feat", "section": "Features"},
+        {"type": "fix", "section": "Bug Fixes"},
+        {"type": "build", "section": "Build system"},
+        {"type": "docs", "section": "Documentation"},
+        {"type": "style", "section": "Coding style"},
+        {"type": "refactor", "section": "Refactor"},
+        {"type": "perf", "section": "Performance"},
+        {"type": "test", "section": "Tests"},
+        {"type": "ci", "section": "CI"}
+    ]
+}

@@ -1,9 +1,12 @@
+#default
+# If you want to customize this file, change 'default' to anything else on the first line
 name: Changelog & Release
 
 on:
   push:
     branches:
       - master
+      - main
     paths-ignore:
       - 'CHANGELOG.md'
 
@@ -26,21 +29,31 @@ jobs:
           node-version: '14.x'
       - name: Install standard-version
         run: npm i -g standard-version
-      - name: Update reposiory
+      - name: Update repository
         run: |
           git fetch --tags
           git pull --unshallow
-      - name: Generate changelog
+          echo "TAGS=$(git tag)" >> $GITHUB_ENV
+      - name: Generate first changelog
+        if: ${{ env.TAGS == 0 }}
         run: |
-          sh gha-generate-changelog.sh
+          standard-version --first-release -i /tmp/changelog.tmp.md --skip.commit --skip.tag
+          standard-version --first-release
+          echo "TAG_NAME=$(git describe --abbrev=0 --tags)" >> $GITHUB_ENV
+      - name: Generate changelog
+        if: ${{ env.TAGS != 0 }}
+        run: |
+          standard-version -i /tmp/changelog.tmp.md --skip.commit --skip.tag
+          standard-version
           echo "TAG_NAME=$(git describe --abbrev=0 --tags)" >> $GITHUB_ENV
       - name: Publish changelog
-        run: git push --follow-tags origin master
+        run: git push --follow-tags origin ${{ github.base_ref }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@master
         with:
-          tag_name: $TAG_NAME
+          tag_name: ${{ env.TAG_NAME }}
+          release_name: ${{ env.TAG_NAME }}
           body_path: /tmp/changelog.tmp.md
           draft: true
         env:
